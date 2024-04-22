@@ -3,7 +3,6 @@ const TaskModel = require("../Models/TaskModel");
 module.exports.getTasks = async (req, res) => {
   const tasks = await TaskModel.find();
   res.send(tasks);
-  // res.send("Hi again");
 };
 
 module.exports.saveTask = async (req, res) => {
@@ -37,7 +36,6 @@ module.exports.updateTask = async (req, res) => {
 
 module.exports.deleteTask = async (req, res) => {
   const { id } = req.params;
-  // In Express.js, req.params contains route parameters specified in the URL.
 
   TaskModel.findByIdAndDelete(id)
     .then(() => res.send("Delete Suceessfully"))
@@ -48,4 +46,26 @@ module.exports.deleteTask = async (req, res) => {
         msg: "Something went wornge!",
       });
     });
+};
+
+module.exports.getUpdatedTodosCount = async (req, res) => {
+  try {
+    const updatedTodosCount = await TaskModel.countDocuments({
+      updatedAt: { $exists: true },
+    });
+    res.send({ count: updatedTodosCount });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ error: err, msg: "Something went wrong!" });
+  }
+};
+
+module.exports.getCreatedTodosCount = async (req, res) => {
+  try {
+    const createdTodosCount = await TaskModel.countDocuments();
+    res.send({ count: createdTodosCount });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ error: err, msg: "Something went wrong!" });
+  }
 };
