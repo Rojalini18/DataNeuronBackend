@@ -1,7 +1,5 @@
 const TaskModel = require("../Models/TaskModel");
 
-const updateCount = 0
-
 module.exports.getTasks = async (req, res) => {
   const tasks = await TaskModel.find();
   res.send(tasks);
@@ -25,20 +23,16 @@ module.exports.updateTask = async (req, res) => {
   const { task } = req.body;
   const { id } = req.params;
 
-  try {
-    await TaskModel.findByIdAndUpdate(id, { task });
-    console.log("Updated Successfully...");
-    updateCount++;
-    res.send("Updated Successfully");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send({
-      error: err,
-      msg: "Something went wrong!",
+  TaskModel.findByIdAndUpdate(id, { task })
+    .then(() => res.send("Updated Suceessfully"))
+    .catch((err) => {
+      console.log(err);
+      res.send({
+        erroe: err,
+        msg: "Something went wornge!",
+      });
     });
-  }
 };
-
 
 module.exports.deleteTask = async (req, res) => {
   const { id } = req.params;
